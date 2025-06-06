@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alleys31.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="什么是IP地址？在计算机网络入门（一）中，我们已经知道了，在网络中两台设备之间要想完成信息交流，那两个设备就必须配置正确的网络地址，也叫IP地址。IP地址的主要作用就是实现不同子网之间设备的网络通信，具体是怎么实现的呢？我们慢慢来看，首先先要认识一下IP地址的格式（本文特指IPv4） IP地址的格式IP地址由32位二进制数组成，而为了方便人类理解记忆，一般展示为每8位用.隔开，分成4组，并且将每一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP地址详解">
+<meta property="og:url" content="https://alleys31.github.io/2025/06/06/IP%E5%9C%B0%E5%9D%80%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="小王的小窝">
+<meta property="og:description" content="什么是IP地址？在计算机网络入门（一）中，我们已经知道了，在网络中两台设备之间要想完成信息交流，那两个设备就必须配置正确的网络地址，也叫IP地址。IP地址的主要作用就是实现不同子网之间设备的网络通信，具体是怎么实现的呢？我们慢慢来看，首先先要认识一下IP地址的格式（本文特指IPv4） IP地址的格式IP地址由32位二进制数组成，而为了方便人类理解记忆，一般展示为每8位用.隔开，分成4组，并且将每一">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-06-06T11:51:17.000Z">
+<meta property="article:modified_time" content="2025-06-06T11:53:13.759Z">
+<meta property="article:author" content="小王同学">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://alleys31.github.io/2025/06/06/IP%E5%9C%B0%E5%9D%80%E8%AF%A6%E8%A7%A3/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://alleys31.github.io/2025/06/06/IP%E5%9C%B0%E5%9D%80%E8%AF%A6%E8%A7%A3/","path":"2025/06/06/IP地址详解/","title":"IP地址详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>IP地址详解 | 小王的小窝</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">小王的小窝</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/home/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFIP%E5%9C%B0%E5%9D%80%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什么是IP地址？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IP%E5%9C%B0%E5%9D%80%E7%9A%84%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">IP地址的格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NAT"><span class="nav-number">3.</span> <span class="nav-text">NAT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%A4%E4%B8%AA%E8%AE%BE%E5%A4%87%E6%98%AF%E5%90%A6%E5%9C%A8%E5%90%8C%E4%B8%80%E5%AD%90%E7%BD%91%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">如何判断两个设备是否在同一子网？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CIDR"><span class="nav-number">4.1.</span> <span class="nav-text">CIDR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81"><span class="nav-number">4.2.</span> <span class="nav-text">子网掩码</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">小王同学</p>
+  <div class="site-description" itemprop="description">小王的各种日常记录</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://alleys31.github.io/2025/06/06/IP%E5%9C%B0%E5%9D%80%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="小王同学">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小王的小窝">
+      <meta itemprop="description" content="小王的各种日常记录">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="IP地址详解 | 小王的小窝">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IP地址详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-06-06 19:51:17 / 修改时间：19:53:13" itemprop="dateCreated datePublished" datetime="2025-06-06T19:51:17+08:00">2025-06-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/" itemprop="url" rel="index"><span itemprop="name">技术博客</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="什么是IP地址？"><a href="#什么是IP地址？" class="headerlink" title="什么是IP地址？"></a>什么是IP地址？</h1><p>在<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45518315/article/details/147983192">计算机网络入门（一）</a>中，我们已经知道了，在网络中两台设备之间要想完成信息交流，那两个设备就必须配置正确的网络地址，也叫IP地址。IP地址的主要作用就是实现不同子网之间设备的网络通信，具体是怎么实现的呢？我们慢慢来看，首先先要认识一下IP地址的格式（本文特指IPv4）</p>
+<h1 id="IP地址的格式"><a href="#IP地址的格式" class="headerlink" title="IP地址的格式"></a>IP地址的格式</h1><p>IP地址由32位二进制数组成，而为了方便人类理解记忆，一般展示为每8位用<code>.</code>隔开，分成4组，并且将每一组转换为十进制形式。如：</p>
+<blockquote>
+<p>11000000 10101000 00000001 00000001<br>这样一个IP地址，可以写为： 192.168.1.1</p>
+</blockquote>
+<p>所以互联网上最多可以分配的IP地址数量为：2^32&#x3D;4294967296个，大约43亿</p>
+<p>但是决定IP地址的数量的并不是网络设备的数量，而是网卡的数量。一些路由器、服务器等设备一般都包含多块网卡，且现在我们的智能手机、平板电脑等也都有网卡，按道理来讲，互联网上的IP数量应该远远不止43亿了，那IP地址是如何分配，才能容纳这么多的设备呢？</p>
+<h1 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h1><p>NAT(Network Address Translation, 网络地址转换)是一种网络技术，用于将私有网络中的内部IP地址转换为公网IP地址，从而实现内部网络与外部网络（如互联网）之间的通信。</p>
+<p>简单来说，在一个子网络内，每个设备都有一个<code>私有IP地址</code>，私有IP地址的格式与公网IP地址一致，但是私有IP地址不能直接用于在互联网上交流，只是用来标记子网络内不同设备。当一个设备向互联网发送请求时，请求消息会首先经过<code>NAT设备</code>，将私有IP地址转换为真正的公网IP地址，这样就可以与公网进行消息交换了。</p>
+<p>在NAT设备上，通过不同的端口号来区分来自不同私有IP地址的消息，以便将消息正确的转发。这样，一个公网IP便可以对应多个私有IP地址，这样就解决了公网IP地址有限的问题，避免设备数量过多导致IP地址不够分。</p>
+<h1 id="如何判断两个设备是否在同一子网？"><a href="#如何判断两个设备是否在同一子网？" class="headerlink" title="如何判断两个设备是否在同一子网？"></a>如何判断两个设备是否在同一子网？</h1><h2 id="CIDR"><a href="#CIDR" class="headerlink" title="CIDR"></a>CIDR</h2><p>CIDR（Classless Inter-Domain Routing，无类域间路由）是一种用于 IP地址表示与网络划分 的方法，它规定IP地址的表示形式为：</p>
+<blockquote>
+<p>IP地址&#x2F;子网长度</p>
+</blockquote>
+<p>例如：</p>
+<blockquote>
+<p>192.168.0.0&#x2F;16</p>
+</blockquote>
+<p>IP地址我们上面已经学习过了，那子网长度又是什么呢？</p>
+<p>首先我们先来了解一下子网掩码的概念</p>
+<h2 id="子网掩码"><a href="#子网掩码" class="headerlink" title="子网掩码"></a>子网掩码</h2><p>子网掩码是为了区分不同的子网络引入的概念，与IP地址一样，子网掩码也是由32位二进制数组成，不同的是，子网掩码必须由连续的若干个1开始，后跟连续的若干个0，0和1不能交叉出现，例如：</p>
+<blockquote>
+<p>11111111 00000000 11111111 00000000<br>11110000 10101010 00000000 00000000<br>11111111 11111111 11111110 10000010</p>
+</blockquote>
+<p>这些都不是正确的子网掩码格式</p>
+<p>而下面是一个正确的子网掩码格式：</p>
+<blockquote>
+<p>11111111 11111111 00000000 00000000</p>
+</blockquote>
+<p>和IP地址一样，上面的子网掩码也可以人性化表示为：</p>
+<blockquote>
+<p>255.255.0.0</p>
+</blockquote>
+<p>那么怎么使用子网掩码来区分两个IP地址是否在同一子网中呢？答案是<code>按位与</code><br>假如有两个IP地址：192.168.0.1和192.168.1.0，子网掩码为255.255.0.0，首先我们将它们写成二进制形式：</p>
+<blockquote>
+<p>192.168.0.1: 11000000 10101000 00000000 00000001<br>192.168.1.0: 11000000 10101000 00000001 00000000<br>255.255.0.0: 11111111 11111111 00000000 00000000</p>
+</blockquote>
+<p>分别将两个IP地址与子网掩码进行按为与操作，我们发现两个结果均为：</p>
+<blockquote>
+<p>11000000 10101000 00000000 00000000</p>
+</blockquote>
+<p>这两个IP得到的结果是相同的，则说明它们在同一个子网中，而得到的这个结果，称为<code>网络号</code></p>
+<p>所以可以得到结论，在子网掩码为255.255.0.0时，192.168.0.1与192.168.1.0属于同一个子网，网络号为192.168.0.0</p>
+<p>由于子网掩码的特性为一定是连续的若干个1后跟连续的若干个0，所以子网掩码也可以用一个更简单的方式来表达，那就是上面所说的<code>子网长度</code>，即子网掩码中1的数量，例如255.255.0.0，其中包含了16个1，因此子网长度为16，因此上面的子网络可以表示为</p>
+<blockquote>
+<p>192.168.0.0&#x2F;16</p>
+</blockquote>
+<p>它代表了一个子网络的IP地址范围，其中包含了192.168.0.0-192.168.255.255这一系列IP地址</p>
+<p>特别地，当子网长度为32时，例如192.168.125.131&#x2F;32，就表示了一个具体的IP地址</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"><i class="fa fa-tag"></i> 计算机网络</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/25/ActiveMQ%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E9%97%AE%E9%A2%98/" rel="prev" title="ActiveMQ僵尸进程问题">
+                  <i class="fa fa-angle-left"></i> ActiveMQ僵尸进程问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小王同学</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">10k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">9 分钟</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
