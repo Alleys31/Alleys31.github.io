@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="小王同学">
+
+
+
+  <meta name="description" content="小王的各种日常记录">
+
+
+
+<title>计算机网络入门（二） | 小王的小窝</title>
+
+
+
+<link rel="icon" href="/favicon.png">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="小王的小窝" />
+          小王的小窝
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        计算机网络入门（二）
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives">Posts</a>
+        
+        
+          
+            <a class="w-5 h-5 hidden sm:flex" title="Github" target="_blank" rel="noopener" href="https://github.com/Alleys31">
+              <iconify-icon width="20" icon="ri:github-line"></iconify-icon>
+            </a>
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="Github" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        计算机网络入门（二）
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-01-15</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>10 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>3.1k words</span>
+          </span>
+          
+            <span class="text-gray-400">·</span>
+            <span class="flex items-center gap-1">
+              <iconify-icon width="16" icon="icon-park-outline:box" class="mr-2"></iconify-icon>
+              <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/">技术博客</a>
+            </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h1 id="在浏览器输入一个网址，按下回车后，到底都发生了什么？"><a href="#在浏览器输入一个网址，按下回车后，到底都发生了什么？" class="headerlink" title="在浏览器输入一个网址，按下回车后，到底都发生了什么？"></a>在浏览器输入一个网址，按下回车后，到底都发生了什么？</h1><p><a href="https://alleys31.github.io/2025/05/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%85%A5%E9%97%A8%EF%BC%88%E4%B8%80%EF%BC%89/">上一篇文章</a>，我们已经了解了网络的基本组成结构，以及每一层分别实现了什么功能。今天，我们将深入探索，详细看看在网络传输中的每一个环节都发生了什么。</p>
+<p>我们在上网时，在浏览器输入一个网址，按下回车键，我们想要的页面就展示出来了，那你们有没有想过，在按下回车键之后，都发生了什么呢？</p>
+<p>我们今天就来详细看看。假如我在浏览器界面输入了这样一个网址<br><a href="https://alleys31.github.io/2025/05/15/homepage">https://alleys31.github.io/2025/05/15/homepage</a><br>按下回车后都发生了什么呢？</p>
+<h2 id="URL解析"><a href="#URL解析" class="headerlink" title="URL解析"></a>URL解析</h2><p>要讲网络通信，绕不开的一个概念就是URL。什么是URL呢？</p>
+<p>URL（Uniform Resource Locator，统一资源定位符），用于定位互联网上资源的地址。它由多个部分组成，包括协议、域名、路径和查询参数等，用于唯一标识和访问网络上的资源。</p>
+<p>一个URL的基本构成为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">协议://主机:端口/要访问的资源路径?查询参数</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>协议：指定访问资源所使用的协议，如http、https、ftp等。</li>
+<li>主机：标识资源所在的服务器，如<a target="_blank" rel="noopener" href="http://www.example.com./">www.example.com。</a></li>
+<li>端口：指定服务器上的端口号，通常默认端口可以省略，如80（HTTP）或443（HTTPS）。</li>
+<li>路径：指定服务器上资源的具体位置，如&#x2F;path&#x2F;to&#x2F;resource。</li>
+<li>查询参数：用于传递额外的信息，多个参数用&amp;分隔，如?key1&#x3D;value1&amp;key2&#x3D;value2。</li>
+</ul>
+<hr>
+<p>这个结构是不是很眼熟？没错，实际上，我们刚才输入的网址就是一个URL</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://alleys31.github.io/2025/05/15/homepage</span><br></pre></td></tr></table></figure>
+<p>既然已经知道了URL的组成结构，那么现在我们就可以理解这个网址的含义了。</p>
+<p>我们使用了https协议，访问alleys31.github.io这台主机的443端口上的服务，要访问的是主机上&#x2F;2025&#x2F;05&#x2F;15&#x2F;homepage这个文件的内容。</p>
+<blockquote>
+<p>明确要“传什么”——这就是<strong>应用层</strong>负责的功能。</p>
+</blockquote>
+<h2 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h2><p>通过分析URL，我们知道了要访问的是<code>alleys31.github.io</code>这台主机，而我们知道，定位一个网络设备需要的是IP地址，而这里的<code>alleys31.github.io</code>相当于是一个“别名”，我们称之为<code>域名</code>。我们需要知道这个域名对应的IP地址是什么，才能在网络中定位到该主机。</p>
+<p>在网络中，有一种服务器，它们专门保存了 Web 服务器域名与 IP地址的对应关系，它们就是 DNS服务器。</p>
+<p>域名的构造结构有什么规范？DNS服务器具体是如何根据域名查出对应的IP地址的？<br>这里<a href="">留一个坑</a>，后续我将单独写一篇笔记来学习。</p>
+<p>通过DNS服务的帮助，现在我们已经知道了待访问的主机的IP地址了，假设为185.199.110.153</p>
+<hr>
+<p>通过上面的步骤，我们现在已经明确了本次网络传输的目标：我们当前浏览器程序占用的端口（一般为随机端口）向185.199.110.153这台服务器的443端口发送请求，访问服务器上的&#x2F;2025&#x2F;05&#x2F;15&#x2F;homepage文件内容。接下来就可以正式开始信息的传输过程了。</p>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>应用层的下一层为传输层，我们知道，传输层负责的功能是实现<code>端口到端口</code>的通信，因此TCP传输的报文<code>头部</code>就包含了发送方及接收方的端口号，除此以外根据协议不同还有其他字段，本笔记仅作入门，头部的具体格式这里不做详解。</p>
+<p>传输层将需要<code>传输的数据内容</code>和<code>头部</code>打包起来，构成传输层报文，发往下一层。</p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>传输层负责的是端口到端口的通信，而网络层负责的是主机到主机的通信，网络层的报文头部包含了发送方及接收方的IP地址，网络层将传输层发来的报文进一步包装，加上IP头部，继续发往下一层。</p>
+<h2 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h2><p>和前两层类似的，在数据链路层需要给报文加上发送方和接收方的MAC地址，而MAC地址该如何获取呢？</p>
+<p>发送方的MAC地址比较容易获得，就是本机网卡的MAC地址<br>接收方的MAC地址就比较麻烦了，因为我们只知道目标的IP地址，并不知道它的MAC地址。这时就需要另一个协议来发挥作用了——ARP（Address Resolution Protocol，地址解析协议）。</p>
+<p>根据ARP 协议，我们首先判断目标IP地址是否与我们在同一子网中，如果是，主机会以广播的形式，对以太网所有的设备喊出：“这个 IP 地址是谁的？请把你的 MAC 地址告诉我”，这样，符合要求的主机就会将自己的MAC地址发送回来。</p>
+<p>那如果没有在一个子网呢？那也很简单，根据路由表可以查出目标IP需要通过哪个网关（gateway）发出，我们的接收方MAC地址即为该网关的MAC地址。</p>
+<blockquote>
+<p>每次获取MAC地址都要这样查询，这样岂不是很麻烦，而且会影响传输的效率呀？</p>
+</blockquote>
+<p>放心，ARP对此已经做了考虑，操作系统会把本次查询结果放到一块叫做<code>ARP 缓存</code>的内存空间留着以后用。</p>
+<p>下次再需要查询MAC地址时，操作系统首先会检查ARP缓存的内容，如果ARP缓存中有该IP对应的MAC地址信息，就直接取用，ARP缓存中没有才会去广播查询。</p>
+<p>在拿到发送方和接收方的MAC地址后，数据链路层对网络层发来的报文进行进一步封装，组成最终的报文形式。</p>
+<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><p>我们封装完成的数据报文是一组二进制的数字信息形式，想要在网线上传输，还需要把它们转换成电信号，这一过程由网卡来执行。网卡将待发送的数据转换为电信号，通过网线发出，至此，数据包才真正离开了我们的电脑。</p>
+<h2 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h2><p>数据包离开主机后到达的第一站就是交换机。交换机是什么呢？</p>
+<p>我们知道，网络就是由若干网络设备连接在一起组成的，那么它们之间是怎么连接的呢？总不能直接把我的电脑用一根线和别人的电脑连在一起，或者是直接把我的电脑插在路由器上吧？所以我们就需要有一个“中转站”，这就是交换机的作用，交换机上有很多的网络接口，把一个子网中的设备连接起来。</p>
+<p>交换机本身是没有MAC地址或IP地址的，它的任务就是将接收到的网络包原样转发到目的地。交换机中维护了一个MAC地址的映射表<br><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%85%A5%E9%97%A8%EF%BC%88%E4%BA%8C%EF%BC%89/MAC%E5%9C%B0%E5%9D%80%E6%98%A0%E5%B0%84%E8%A1%A8.png" alt="MAC地址映射表"><center><em>图片来源于网络</em></center></p>
+<p>举个例子，如果收到的包的接收方 MAC 地址为 00-60-97-A5-43-3C，则与图中表中的第 1 行匹配，根据端口列的信息，可知这个地址位于 1 号端口上，然后就可以通过交换电路将包发送到相应的端口了。</p>
+<blockquote>
+<p>如果 MAC 地址表找不到指定的 MAC 地址会怎么样？</p>
+</blockquote>
+<p>地址表中找不到指定的 MAC 地址。可能是因为具有该地址的设备还没有向交换机发送过包，或者这个设备一段时间没有工作导致地址被从地址表中删除了。</p>
+<p>这种情况下，交换机无法判断应该把包转发到哪个端口，只能将包转发到除了源端口之外的所有端口上，无论该设备连接在哪个端口上都能收到这个包。</p>
+<p>这样做不会产生什么问题，因为以太网的设计本来就是将包发送到整个网络的，然后只有相应的接收者才接收包，而其他设备则会忽略这个包。</p>
+<p>有人会说：“这样做会发送多余的包，会不会造成网络拥塞呢？”</p>
+<p>其实完全不用过于担心，因为发送了包之后目标设备会作出响应，只要返回了响应包，交换机就可以将它的地址写入 MAC 地址表，下次也就不需要把包发到所有端口了。</p>
+<p>局域网中每秒可以传输上千个包，多出一两个包并无大碍。</p>
+<h2 id="路由器"><a href="#路由器" class="headerlink" title="路由器"></a>路由器</h2><p>网络包经过交换机转发后，就到达了路由器，数据包在此被转发到下一个路由器或者目标机器。</p>
+<p>转发过程与交换机比较类似，也是通过查表来确定将数据包转发给谁，不过这里查的是<code>路由表</code>。</p>
+<p>并且路由器与交换机有所不同</p>
+<ul>
+<li>交换机是基于以太网设计的，俗称<strong>二层网络设备</strong>，它本身没有IP地址和MAC地址</li>
+<li>路由器是基于IP设计的，俗称<strong>三层网络设备</strong>，路由器的各个端口都有自己的IP地址和MAC地址</li>
+</ul>
+<p>网络包到达路由器后，路由器会解开其中的接收方MAC地址，与自己的MAC地址对比，如果确定接收方是自己，则接收这个网络包，否则丢弃。接收网络包后，继续解析其中的目标IP，查询<code>路由表</code>判断通过哪个接口转发。路由表的结构大概如下图所示：<br><img src="/images/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%85%A5%E9%97%A8%EF%BC%88%E4%BA%8C%EF%BC%89/%E8%B7%AF%E7%94%B1%E8%A1%A8.png" alt="在这里插入图片描述"><br>通过查表，如果“网关”列为空，说明目标地址与路由器在同一子网内，无需再发送到其他路由器进行转发，则目标IP就是当前的目标地址。</p>
+<p>如果“网关”不为空，说明目标地址不在当前子网内，还需要通过网关进行转发，那么目标IP则是网关的IP。</p>
+<p>知道了下一目标的IP后，路由器继续通过ARP协议获取目标的MAC地址，将网络包中的接收方与发送方MAC地址进行更新，这里我们假设包还没有到达终点。</p>
+<p>发送出去的网络包会通过交换机到达下一个路由器。由于接收方 MAC 地址就是下一个路由器的地址，所以交换机会根据这一地址将包传输到下一个路由器。</p>
+<p>接下来，下一个路由器会将包转发给再下一个路由器，经过层层转发之后，网络包就到达了最终的目的地。</p>
+<blockquote>
+<p>不知你发现了没有，在网络包传输的过程中，源 IP 和目标 IP 始终是不会变的，一直变化的是 MAC 地址，因为需要 MAC 地址在以太网内进行两个设备之间的包传输。</p>
+</blockquote>
+<h2 id="抵达目标服务器"><a href="#抵达目标服务器" class="headerlink" title="抵达目标服务器"></a>抵达目标服务器</h2><p>数据包抵达服务器后，服务器会先扒开数据包的 MAC 头部，查看是否和服务器自己的 MAC 地址符合，符合就将包收起来。</p>
+<p>接着继续扒开数据包的 IP 头，发现 IP 地址符合，并且知道了对方使用的协议，以及要访问的端口，于是把数据包的内容发给了HTTPS进程。</p>
+<p>HTTPS进程拿到数据后，根据消息内容，知道了我们想要访问的是&#x2F;2025&#x2F;05&#x2F;15&#x2F;homepage这个文件，于是将这个文件的内容打包后再次发出。</p>
+<hr>
+<p>数据包通过同样的步骤，经过交换机、路由器层层转发，最终回到我们的电脑。</p>
+<p>至此，我们就可以在我们的浏览器上看到要访问的页面了。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2025/05/25/ActiveMQ%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E9%97%AE%E9%A2%98/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          ActiveMQ僵尸进程问题
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2025/05/15/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%85%A5%E9%97%A8%EF%BC%88%E4%B8%80%EF%BC%89/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          计算机网络入门（一）
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
